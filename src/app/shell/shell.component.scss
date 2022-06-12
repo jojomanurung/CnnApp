@@ -1,0 +1,25 @@
+.word-wrp {
+  white-space: normal;
+}
+
+mat-toolbar,
+mat-toolbar h1,
+mat-toolbar h2,
+mat-toolbar h3,
+mat-toolbar h4,
+mat-toolbar h5,
+mat-toolbar h6 {
+  font-weight: 400 !important;
+}
+
+.mat-drawer.mat-sidenav {
+  min-width: 222px;
+  width: 222px;
+}
+
+.shell-content {
+  min-height: calc(100vh - 64px);
+  height: 100%;
+  padding: 42px 30px 0 30px;
+  overflow: auto;
+}

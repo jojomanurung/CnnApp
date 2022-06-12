@@ -1,1 +1,22 @@
-<router-outlet></router-outlet>
+<mat-toolbar class="example-header">
+  <button mat-icon-button disableRipple="true" (click)="sidenav.toggle()">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <h5 class="pl-3" style="cursor: default">
+    {{ pageTitle | async }}
+  </h5>
+</mat-toolbar>
+
+<mat-sidenav-container>
+  <mat-sidenav #sidenav opened mode="side">
+    <div class="pt-4">
+      <app-menu-items *ngFor="let item of MENU_ITEMS" [item]="item"></app-menu-items>
+    </div>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <div class="shell-content">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
