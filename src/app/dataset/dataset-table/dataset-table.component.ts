@@ -8,12 +8,13 @@ import {
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { ActivatedRoute, Router } from '@angular/router';
 import { SubSink } from 'subsink2';
 
 @Component({
   selector: 'app-dataset-table',
   templateUrl: './dataset-table.component.html',
-  styleUrls: ['./dataset-table.component.scss']
+  styleUrls: ['./dataset-table.component.scss'],
 })
 export class DatasetTableComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -21,8 +22,9 @@ export class DatasetTableComponent implements OnInit, AfterViewInit, OnDestroy {
   private subs = new SubSink();
   dataSource: MatTableDataSource<any>;
   displayedColumns: string[] = ['id', 'name', 'progress', 'color'];
+  types: string[] = ['training', 'validasi'];
 
-  constructor() { }
+  constructor(private router: ActivatedRoute, private route: Router) {}
 
   ngOnInit(): void {
     // Create 100 users
@@ -30,7 +32,16 @@ export class DatasetTableComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // Assign the data to the data source for the table to render
     this.dataSource = new MatTableDataSource(users);
+
+    this.subs.sink = this.router.paramMap.subscribe((param) => {
+      const params = param.get('type');
+      if (!this.types.includes(params)) {
+        this.route.navigate(['dataset', 'training']);
+      }
+      console.log(params);
+    });
   }
+
   ngAfterViewInit(): void {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
