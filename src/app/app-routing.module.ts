@@ -18,6 +18,11 @@ const appRoutes: Routes = [
     loadChildren: () =>
       import('./prediksi/prediksi.module').then((m) => m.PrediksiModule),
   },
+  {
+    path: '**',
+    redirectTo: 'dashboard',
+    pathMatch: 'full'
+  }
 ];
 
 const routes: Routes = [

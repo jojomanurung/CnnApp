@@ -5,11 +5,14 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
+import { DatasetService } from 'src/app/services/dataset.service';
 import { SubSink } from 'subsink2';
+import * as _ from 'lodash';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-dataset-table',
@@ -18,99 +21,67 @@ import { SubSink } from 'subsink2';
 })
 export class DatasetTableComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
   private subs = new SubSink();
-  dataSource: MatTableDataSource<any>;
-  displayedColumns: string[] = ['id', 'name', 'progress', 'color'];
+  dataSource: MatTableDataSource<any> = new MatTableDataSource();
+  displayedColumns: string[] = ['id', 'name'];
   types: string[] = ['training', 'validasi'];
+  typeFilter = new FormControl('benign');
+  currentParam: string;
+  folderLink: string;
+  page: number = 0;
 
-  constructor(private router: ActivatedRoute, private route: Router) {}
+  constructor(private router: ActivatedRoute, private route: Router, private datasetService: DatasetService) {}
 
   ngOnInit(): void {
-    // Create 100 users
-    const users = Array.from({ length: 100 }, (_, k) => createNewUser(k + 1));
-
-    // Assign the data to the data source for the table to render
-    this.dataSource = new MatTableDataSource(users);
-
-    this.subs.sink = this.router.paramMap.subscribe((param) => {
-      const params = param.get('type');
+    this.subs.sink = this.router.paramMap.subscribe((resp) => {
+      const params = resp.get('type');
       if (!this.types.includes(params)) {
         this.route.navigate(['dataset', 'training']);
       }
+      this.currentParam = params;
       console.log(params);
+      this.getTableData();
     });
+    this.initFilter();
   }
 
   ngAfterViewInit(): void {
     this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
+    this.subs.sink = this.paginator.page.subscribe((page) => {
+      this.page = page.pageIndex * page.pageSize;
+    });
+  }
+
+  getTableData() {
+    const filter = this.typeFilter.value;
+    this.subs.sink = this.datasetService.getDataset(filter, this.currentParam).subscribe((resp) => {
+      console.log(resp);
+      if (resp) {
+        const data = _.cloneDeep(resp);
+        this.folderLink = data.folder_link;
+        const gambar = data.gambar;
+        this.dataSource.data = gambar;
+        if (this.dataSource.paginator) {
+          this.dataSource.paginator.firstPage();
+        }
+      }
+    }, (err) => {
+      console.log(err);
+    })
+  }
+
+  initFilter() {
+    this.subs.sink = this.typeFilter.valueChanges.subscribe((type) => {
+      console.log(type);
+      this.getTableData();
+    })
+  }
+
+  goToFolderLink() {
+    window.open(this.folderLink, '_blank');
   }
 
   ngOnDestroy(): void {
     this.subs.unsubscribe();
   }
-}
-
-/** Constants used to fill up our data base. */
-const COLORS: string[] = [
-  'maroon',
-  'red',
-  'orange',
-  'yellow',
-  'olive',
-  'green',
-  'purple',
-  'fuchsia',
-  'lime',
-  'teal',
-  'aqua',
-  'blue',
-  'navy',
-  'black',
-  'gray',
-];
-const NAMES: string[] = [
-  'Maia',
-  'Asher',
-  'Olivia',
-  'Atticus',
-  'Amelia',
-  'Jack',
-  'Charlotte',
-  'Theodore',
-  'Isla',
-  'Oliver',
-  'Isabella',
-  'Jasper',
-  'Cora',
-  'Levi',
-  'Violet',
-  'Arthur',
-  'Mia',
-  'Thomas',
-  'Elizabeth',
-];
-
-export interface UserData {
-  id: string;
-  name: string;
-  progress: string;
-  color: string;
-}
-
-/** Builds and returns a new User. */
-function createNewUser(id: number): UserData {
-  const name =
-    NAMES[Math.round(Math.random() * (NAMES.length - 1))] +
-    ' ' +
-    NAMES[Math.round(Math.random() * (NAMES.length - 1))].charAt(0) +
-    '.';
-
-  return {
-    id: id.toString(),
-    name: name,
-    progress: Math.round(Math.random() * 100).toString(),
-    color: COLORS[Math.round(Math.random() * (COLORS.length - 1))],
-  };
 }

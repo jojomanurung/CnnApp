@@ -7,6 +7,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { ShellComponent } from './shell/shell.component';
 import { MenuItemsComponent } from './shell/menu-items/menu-items.component';
 import { SharedModule } from './shared/shared.module';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -16,6 +17,7 @@ import { SharedModule } from './shared/shared.module';
   ],
   imports: [
     BrowserModule,
+    HttpClientModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     SharedModule,
