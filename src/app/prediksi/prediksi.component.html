@@ -1,16 +1,19 @@
-<mat-horizontal-stepper linear [selectedIndex]="selectedIndex" (selectionChange)="selectionChange()" disableRipple="true" #stepper>
+<mat-horizontal-stepper linear [selectedIndex]="selectedIndex" (selectionChange)="selectionChange($event)" disableRipple="true" #stepper>
   <ng-template [matStepperIcon]="'done'">
-    <mat-icon>check_circle</mat-icon>
+    <mat-icon>done</mat-icon>
+  </ng-template>
+  <ng-template [matStepperIcon]="'edit'">
+    <mat-icon>done</mat-icon>
   </ng-template>
 
-  <mat-step>
-    <ng-template matStepLabel>Upload gambar</ng-template>
+  <mat-step [stepControl]="firstForm" label="Upload gambar">
+    <app-upload-gambar></app-upload-gambar>
   </mat-step>
-  <mat-step>
-    <ng-template matStepLabel>List test data</ng-template>
+  <mat-step [stepControl]="secondForm" label="List test data">
+    <!-- Componenst second step -->
   </mat-step>
-  <mat-step>
-    <ng-template matStepLabel>Prediksi</ng-template>
+  <mat-step [stepControl]="thirdForm" label="Prediksi">
+    <!-- Component third step -->
   </mat-step>
   <mat-step>
     <ng-template matStepLabel>Done</ng-template>
