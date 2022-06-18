@@ -1,4 +1,10 @@
-<mat-horizontal-stepper linear [selectedIndex]="selectedIndex" (selectionChange)="selectionChange($event)" disableRipple="true" #stepper>
+<mat-horizontal-stepper
+  linear
+  [selectedIndex]="selectedIndex"
+  (selectionChange)="selectionChange($event)"
+  disableRipple="true"
+  #stepper
+>
   <ng-template [matStepperIcon]="'done'">
     <mat-icon>done</mat-icon>
   </ng-template>
@@ -8,12 +14,41 @@
 
   <mat-step [stepControl]="firstForm" label="Upload gambar">
     <ng-container *ngIf="selectedIndex === 0">
-      <app-upload-gambar (payload)="saveImage($event)" [editable]="isEditable"></app-upload-gambar>
+      <app-upload-gambar
+        (payload)="saveImage($event)"
+        [editable]="isEditable"
+      ></app-upload-gambar>
     </ng-container>
   </mat-step>
-  <mat-step [stepControl]="secondForm" label="List test data" [editable]="isEditable">
+  <mat-step [stepControl]="secondForm" label="Tabel Data">
     <ng-container *ngIf="selectedIndex === 1">
-      <app-table-data></app-table-data>
+      <app-table-data
+        [(data)]="imageDataList"
+        [editable]="isEditable"
+      ></app-table-data>
+      <div
+        class="grid grid-nogutter justify-content-end align-items-center pt-3"
+        *ngIf="isEditable"
+      >
+        <div class="col">
+          <h4 class="font-medium m-0">
+            Setelah lanjut tidak dapat menambah gambar lagi
+          </h4>
+        </div>
+        <div class="col-fixed">
+          <button mat-flat-button color="warn" class="mr-2" matStepperPrevious>
+            Kembali
+          </button>
+          <button
+            mat-flat-button
+            color="primary"
+            class="mr-2"
+            (click)="proceed()"
+          >
+            Selanjutnya
+          </button>
+        </div>
+      </div>
     </ng-container>
   </mat-step>
   <mat-step [stepControl]="thirdForm" label="Prediksi">

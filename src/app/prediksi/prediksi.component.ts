@@ -6,7 +6,7 @@ import { MatHorizontalStepper } from '@angular/material/stepper';
 @Component({
   selector: 'app-prediksi',
   templateUrl: './prediksi.component.html',
-  styleUrls: ['./prediksi.component.scss']
+  styleUrls: ['./prediksi.component.scss'],
 })
 export class PrediksiComponent implements OnInit {
   @ViewChild('stepper') stepper: MatHorizontalStepper;
@@ -17,7 +17,7 @@ export class PrediksiComponent implements OnInit {
   isEditable: boolean = true;
   imageDataList: any[] = [];
 
-  constructor(private fb: FormBuilder) { }
+  constructor(private fb: FormBuilder) {}
 
   ngOnInit(): void {
     this.initForm();
@@ -35,28 +35,33 @@ export class PrediksiComponent implements OnInit {
     this.thirdForm = this.fb.group({
       result: ['', Validators.required],
       is_saved: [false],
-      convusion_matrix: [null]
+      convusion_matrix: [null],
     });
   }
 
   selectionChange(event: StepperSelectionEvent): void {
     const currentIndex = event.selectedIndex;
     const prevIndex = event.previouslySelectedIndex;
+
+    // To set previous step state to nothing
     if (prevIndex > currentIndex) {
       event.previouslySelectedStep.state = '';
     }
-    console.log('selected index', this.selectedIndex);
-    console.log('event stepper', event.selectedIndex);
-    console.log('completed', event.selectedStep.completed);
+    this.selectedIndex = currentIndex;
   }
 
   saveImage(event: any) {
-    console.log(event);
     if (event) {
       this.imageDataList.push(event);
       this.firstForm.get('done').patchValue('true');
+      this.stepper.next();
     }
     console.log('data img', this.imageDataList);
   }
 
+  proceed() {
+    this.secondForm.get('done').patchValue('true');
+    this.isEditable = false;
+    this.stepper.next();
+  }
 }
