@@ -1,4 +1,4 @@
-<div class="grid grid-nogutter" [formGroup]="form">
+<div class="grid grid-nogutter" [formGroup]="form" *ngIf="editable; else noteditable">
   <div class="col-12">
     <div class="grid grid-nogutter">
       <div class="col-fixed pr-3">
@@ -59,7 +59,7 @@
         </mat-form-field>
       </div>
       <div class="col">
-        <button mat-flat-button color="primary" (click)="processImg()">Submit</button>
+        <button mat-flat-button color="primary" (click)="processImg()">Process</button>
       </div>
       <div class="col-fixed">
         <button mat-flat-button color="primary" (click)="saveImg()">Save</button>
@@ -101,3 +101,11 @@
     </div>
   </div>
 </div>
+
+<ng-template #noteditable>
+  <div class="grid grid-nogutter justify-content-center">
+    <div class="py-5">
+      <h1 class="text-center">Tidak dapat menambah gambar lagi</h1>
+    </div>
+  </div>
+</ng-template>

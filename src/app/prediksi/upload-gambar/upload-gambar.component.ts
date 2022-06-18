@@ -2,6 +2,7 @@ import {
   Component,
   ElementRef,
   EventEmitter,
+  Input,
   OnInit,
   Output,
   ViewChild,
@@ -18,6 +19,7 @@ const wait = (time) => new Promise((resolve) => setTimeout(resolve, time));
   styleUrls: ['./upload-gambar.component.scss'],
 })
 export class UploadGambarComponent implements OnInit {
+  @Input('editable') editable: boolean;
   @Output('payload') payload = new EventEmitter();
   @ViewChild('fileUpload') fileUpload: ElementRef;
   @ViewChild('image') img: ElementRef;
@@ -107,6 +109,6 @@ export class UploadGambarComponent implements OnInit {
   }
 
   saveImg() {
-    this.payload.emit(this.form);
+    this.payload.emit(this.form.value);
   }
 }

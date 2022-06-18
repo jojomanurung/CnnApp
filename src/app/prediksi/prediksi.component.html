@@ -8,10 +8,10 @@
 
   <mat-step [stepControl]="firstForm" label="Upload gambar">
     <ng-container *ngIf="selectedIndex === 0">
-      <app-upload-gambar (payload)="saveImage($event)"></app-upload-gambar>
+      <app-upload-gambar (payload)="saveImage($event)" [editable]="isEditable"></app-upload-gambar>
     </ng-container>
   </mat-step>
-  <mat-step [stepControl]="secondForm" label="List test data">
+  <mat-step [stepControl]="secondForm" label="List test data" [editable]="isEditable">
     <ng-container *ngIf="selectedIndex === 1">
       <app-table-data></app-table-data>
     </ng-container>

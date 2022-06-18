@@ -1,6 +1,6 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatHorizontalStepper } from '@angular/material/stepper';
 
 @Component({
@@ -14,6 +14,8 @@ export class PrediksiComponent implements OnInit {
   firstForm: FormGroup;
   secondForm: FormGroup;
   thirdForm: FormGroup;
+  isEditable: boolean = true;
+  imageDataList: any[] = [];
 
   constructor(private fb: FormBuilder) { }
 
@@ -27,7 +29,7 @@ export class PrediksiComponent implements OnInit {
     });
 
     this.secondForm = this.fb.group({
-      file_list: this.fb.array([], Validators.required)
+      done: ['', Validators.required],
     });
 
     this.thirdForm = this.fb.group({
@@ -37,20 +39,24 @@ export class PrediksiComponent implements OnInit {
     });
   }
 
-  getFileList(): FormArray {
-    return this.secondForm.controls['file_list'] as FormArray;
-  }
-
   selectionChange(event: StepperSelectionEvent): void {
-    this.selectedIndex = event.selectedIndex;
+    const currentIndex = event.selectedIndex;
+    const prevIndex = event.previouslySelectedIndex;
+    if (prevIndex > currentIndex) {
+      event.previouslySelectedStep.state = '';
+    }
+    console.log('selected index', this.selectedIndex);
+    console.log('event stepper', event.selectedIndex);
+    console.log('completed', event.selectedStep.completed);
   }
 
-  saveImage(event: FormGroup) {
+  saveImage(event: any) {
     console.log(event);
     if (event) {
-      this.getFileList().push(event);
+      this.imageDataList.push(event);
+      this.firstForm.get('done').patchValue('true');
     }
-    console.log('data img', this.secondForm.value);
+    console.log('data img', this.imageDataList);
   }
 
 }
