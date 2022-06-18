@@ -10,6 +10,7 @@ export class UploadGambarComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+    console.log('step 1');
   }
 
 }

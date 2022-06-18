@@ -7,13 +7,19 @@
   </ng-template>
 
   <mat-step [stepControl]="firstForm" label="Upload gambar">
-    <app-upload-gambar></app-upload-gambar>
+    <ng-container *ngIf="selectedIndex === 0">
+      <app-upload-gambar></app-upload-gambar>
+    </ng-container>
   </mat-step>
   <mat-step [stepControl]="secondForm" label="List test data">
-    <!-- Componenst second step -->
+    <ng-container *ngIf="selectedIndex === 1">
+      <app-table-data></app-table-data>
+    </ng-container>
   </mat-step>
   <mat-step [stepControl]="thirdForm" label="Prediksi">
-    <!-- Component third step -->
+    <ng-container *ngIf="selectedIndex === 2">
+      <app-prediction></app-prediction>
+    </ng-container>
   </mat-step>
   <mat-step>
     <ng-template matStepLabel>Done</ng-template>
