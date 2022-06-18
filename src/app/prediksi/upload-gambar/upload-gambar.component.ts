@@ -41,21 +41,28 @@ export class UploadGambarComponent implements OnInit {
     this.form = this.fb.group({
       file_name: ['', Validators.required],
       file_src: ['', Validators.required],
-      class: ['', Validators.required],
     });
   }
 
-  fileChange(event: any) {
+  toBase64(file): Promise<string | ArrayBuffer> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = error => reject(error);
+    })
+  }
+
+  async fileChange(event: any) {
     const file = event.target.files[0];
     if (file) {
-      const reader = new FileReader();
-
-      reader.readAsDataURL(file);
-
-      reader.onload = (res: any) => {
-        this.form.get('file_src').patchValue(res.target.result);
+      try {
+        const image = await this.toBase64(file);
+        this.form.get('file_src').patchValue(image);
         this.form.get('file_name').patchValue(file.name);
-      };
+      } catch (error) {
+        console.log(error);
+      }
     }
   }
 
@@ -71,7 +78,7 @@ export class UploadGambarComponent implements OnInit {
   reset() {
     this.form.get('file_name').setValue('');
     this.form.get('file_src').setValue('');
-    this.form.get('class').setValue('');
+    this.fileUpload.nativeElement.value = null;
     this.isSubmit = false;
   }
 

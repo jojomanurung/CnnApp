@@ -44,25 +44,11 @@
           >
         </mat-form-field>
       </div>
-      <div class="col-fixed pr-3">
-        <mat-form-field>
-          <mat-label>Jenis gambar</mat-label>
-          <mat-select formControlName="class">
-            <mat-option [value]="'Benign'">Benign</mat-option>
-            <mat-option [value]="'Malignant'">Malignant</mat-option>
-            <mat-option [value]="'Normal'">Normal</mat-option>
-          </mat-select>
-          <mat-error
-            *ngIf="form.get('class').touched && form.get('class').invalid"
-            >Kamu belum pilih jenis gambar!</mat-error
-          >
-        </mat-form-field>
-      </div>
       <div class="col">
         <button mat-flat-button color="primary" (click)="processImg()">Process</button>
       </div>
       <div class="col-fixed">
-        <button mat-flat-button color="primary" (click)="saveImg()">Save</button>
+        <button mat-flat-button color="primary" [disabled]="!isSubmit" (click)="saveImg()">Save</button>
       </div>
     </div>
   </div>
