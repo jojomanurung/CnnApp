@@ -3,7 +3,8 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./out-tsc/app",
-    "types": []
+    "types": ["@types/long"],
+    "typeRoots": [ "./node_modules/@webgpu/types", "./node_modules/@types"]
   },
   "files": [
     "src/main.ts",

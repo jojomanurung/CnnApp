@@ -1,1 +1,103 @@
-<p>upload-gambar works!</p>
+<div class="grid grid-nogutter" [formGroup]="form">
+  <div class="col-12">
+    <div class="grid grid-nogutter">
+      <div class="col-fixed pr-3">
+        <input
+          #fileUpload
+          type="file"
+          style="display: none"
+          [accept]="['.png', '.jpeg', '.jpg']"
+          (change)="fileChange($event)"
+        />
+        <mat-form-field>
+          <input
+            readonly
+            matInput
+            formControlName="file_name"
+            placeholder="Pilih gambar"
+            style="cursor: pointer"
+            (click)="upload($event)"
+          />
+          <button
+            *ngIf="!form.get('file_name').value"
+            matSuffix
+            mat-icon-button
+            disableRipple="true"
+            (click)="fileUpload.click()"
+          >
+            <mat-icon>upload</mat-icon>
+          </button>
+          <button
+            *ngIf="form.get('file_name').value"
+            matSuffix
+            mat-icon-button
+            disableRipple="true"
+            (click)="reset()"
+          >
+            <mat-icon>backspace</mat-icon>
+          </button>
+          <mat-error
+            *ngIf="
+              form.get('file_name').touched && form.get('file_name').invalid
+            "
+            >Kamu belum upload gambar!</mat-error
+          >
+        </mat-form-field>
+      </div>
+      <div class="col-fixed pr-3">
+        <mat-form-field>
+          <mat-label>Jenis gambar</mat-label>
+          <mat-select formControlName="class">
+            <mat-option [value]="'Benign'">Benign</mat-option>
+            <mat-option [value]="'Malignant'">Malignant</mat-option>
+            <mat-option [value]="'Normal'">Normal</mat-option>
+          </mat-select>
+          <mat-error
+            *ngIf="form.get('class').touched && form.get('class').invalid"
+            >Kamu belum pilih jenis gambar!</mat-error
+          >
+        </mat-form-field>
+      </div>
+      <div class="col">
+        <button mat-flat-button color="primary" (click)="processImg()">Submit</button>
+      </div>
+      <div class="col-fixed">
+        <button mat-flat-button color="primary" (click)="saveImg()">Save</button>
+      </div>
+    </div>
+  </div>
+  <div class="col-12">
+    <div class="grid grid-nogutter" *ngIf="isSubmit">
+      <div class="col-6">
+        <img
+          #image
+          class="img-placeholder"
+          [src]="form.get('file_src').value"
+        />
+        <div *ngIf="form.get('file_src').value">
+          <p>Ukuran Gambar: {{ naturalWidth }} x {{ naturalHeight }}</p>
+        </div>
+      </div>
+      <div class="col-6">
+        <mat-card>
+          <div class="grid grid-nogutter">
+            <div class="col-6">
+              <h3 class="font-medium m-0 pb-1">Resize</h3>
+              <canvas #canvas1></canvas>
+              <div>
+                <p>Ukuran Gambar: {{ canvas1.width }} x {{ canvas1.height }}</p>
+              </div>
+            </div>
+            <div class="col-6">
+              <h3 class="font-medium m-0 pb-1">Median Filtering</h3>
+              <canvas #canvas2></canvas>
+              <div>
+                <p>Ukuran Gambar: {{ canvas1.width }} x {{ canvas1.height }}</p>
+              </div>
+            </div>
+          </div>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+</div>

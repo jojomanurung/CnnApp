@@ -1,6 +1,6 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatHorizontalStepper } from '@angular/material/stepper';
 
 @Component({
@@ -8,7 +8,7 @@ import { MatHorizontalStepper } from '@angular/material/stepper';
   templateUrl: './prediksi.component.html',
   styleUrls: ['./prediksi.component.scss']
 })
-export class PrediksiComponent implements OnInit, AfterViewInit {
+export class PrediksiComponent implements OnInit {
   @ViewChild('stepper') stepper: MatHorizontalStepper;
   selectedIndex: number = 0;
   firstForm: FormGroup;
@@ -23,8 +23,7 @@ export class PrediksiComponent implements OnInit, AfterViewInit {
 
   initForm() {
     this.firstForm = this.fb.group({
-      file_name: ['', Validators.required],
-      file_src: ['', Validators.required]
+      done: ['', Validators.required],
     });
 
     this.secondForm = this.fb.group({
@@ -38,13 +37,20 @@ export class PrediksiComponent implements OnInit, AfterViewInit {
     });
   }
 
-  ngAfterViewInit(): void {
-    console.log('stepper', this.stepper);
+  getFileList(): FormArray {
+    return this.secondForm.controls['file_list'] as FormArray;
   }
 
   selectionChange(event: StepperSelectionEvent): void {
-    console.log('selected index', event.selectedIndex);
     this.selectedIndex = event.selectedIndex;
+  }
+
+  saveImage(event: FormGroup) {
+    console.log(event);
+    if (event) {
+      this.getFileList().push(event);
+    }
+    console.log('data img', this.secondForm.value);
   }
 
 }
