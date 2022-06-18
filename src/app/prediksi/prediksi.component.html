@@ -1,1 +1,23 @@
-<p>prediksi works!</p>
+<mat-horizontal-stepper linear [selectedIndex]="selectedIndex" (selectionChange)="selectionChange()" disableRipple="true" #stepper>
+  <ng-template [matStepperIcon]="'done'">
+    <mat-icon>check_circle</mat-icon>
+  </ng-template>
+
+  <mat-step>
+    <ng-template matStepLabel>Upload gambar</ng-template>
+  </mat-step>
+  <mat-step>
+    <ng-template matStepLabel>List test data</ng-template>
+  </mat-step>
+  <mat-step>
+    <ng-template matStepLabel>Prediksi</ng-template>
+  </mat-step>
+  <mat-step>
+    <ng-template matStepLabel>Done</ng-template>
+    <p>You are now done.</p>
+    <div>
+      <button mat-button matStepperPrevious>Back</button>
+      <button mat-button (click)="stepper.reset()">Reset</button>
+    </div>
+  </mat-step>
+</mat-horizontal-stepper>
