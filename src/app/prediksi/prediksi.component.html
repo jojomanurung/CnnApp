@@ -53,11 +53,10 @@
   </mat-step>
   <mat-step [stepControl]="thirdForm" label="Prediksi">
     <ng-container *ngIf="selectedIndex === 2">
-      <app-prediction></app-prediction>
+      <app-prediction [data]="imageDataList"></app-prediction>
     </ng-container>
   </mat-step>
-  <mat-step>
-    <ng-template matStepLabel>Done</ng-template>
+  <mat-step label="Hasil">
     <p>You are now done.</p>
     <div>
       <button mat-button matStepperPrevious>Back</button>

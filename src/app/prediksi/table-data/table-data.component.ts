@@ -18,7 +18,7 @@ import { SubSink } from 'subsink2';
   styleUrls: ['./table-data.component.scss'],
 })
 export class TableDataComponent implements OnInit, AfterViewInit, OnDestroy {
-  _imageList: any;
+  _imageList: any[];
 
   @Input('data')
   set imageList(value) {
@@ -34,7 +34,7 @@ export class TableDataComponent implements OnInit, AfterViewInit, OnDestroy {
   @Output('dataChange') action = new EventEmitter();
   @ViewChild(MatPaginator) paginator: MatPaginator;
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
-  displayedColumns: string[] = ['id', 'name', 'action'];
+  displayedColumns: string[] = ['id', 'name', 'class', 'action'];
   page: number = 0;
   private subs = new SubSink();
 

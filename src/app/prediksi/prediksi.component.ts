@@ -1,6 +1,7 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatHorizontalStepper } from '@angular/material/stepper';
 
 @Component({
@@ -17,7 +18,7 @@ export class PrediksiComponent implements OnInit {
   isEditable: boolean = true;
   imageDataList: any[] = [];
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder, private _snackBar: MatSnackBar) {}
 
   ngOnInit(): void {
     this.initForm();
@@ -51,11 +52,14 @@ export class PrediksiComponent implements OnInit {
   }
 
   saveImage(event: any) {
-    if (event) {
-      this.imageDataList.push(event);
-      this.firstForm.get('done').patchValue('true');
-      this.stepper.next();
-    }
+    this.imageDataList.push(event);
+    this.firstForm.get('done').patchValue('true');
+    const message = 'Sukses menambahkan ' + event.file_name + ' ke dalam list data';
+    this._snackBar.open(message, null, {
+      duration: 5000,
+      horizontalPosition: 'end',
+      verticalPosition: 'top',
+    });
     console.log('data img', this.imageDataList);
   }
 

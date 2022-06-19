@@ -29,6 +29,9 @@ export class UploadGambarComponent implements OnInit {
   naturalWidth: number;
   naturalHeight: number;
   isSubmit = false;
+  classes = ['Benign', 'Malignant', 'Normal'];
+  tooltip =
+    'Kenapa harus pilih jenis gambar? Karna untuk confusion matrix kita membutuhkan true label dari setiap gambar yang akan di prediksi';
 
   constructor(private fb: FormBuilder) {}
 
@@ -41,6 +44,7 @@ export class UploadGambarComponent implements OnInit {
     this.form = this.fb.group({
       file_name: ['', Validators.required],
       file_src: ['', Validators.required],
+      class: ['', Validators.required],
     });
   }
 
@@ -49,8 +53,8 @@ export class UploadGambarComponent implements OnInit {
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = () => resolve(reader.result);
-      reader.onerror = error => reject(error);
-    })
+      reader.onerror = (error) => reject(error);
+    });
   }
 
   async fileChange(event: any) {
@@ -78,6 +82,7 @@ export class UploadGambarComponent implements OnInit {
   reset() {
     this.form.get('file_name').setValue('');
     this.form.get('file_src').setValue('');
+    this.form.get('class').setValue('');
     this.fileUpload.nativeElement.value = null;
     this.isSubmit = false;
   }
@@ -112,10 +117,12 @@ export class UploadGambarComponent implements OnInit {
     cv.medianBlur(img, medianBlur, 5);
     cv.imshow(this.canvas2.nativeElement, medianBlur);
     await wait(10);
-    img.delete(); medianBlur.delete();
+    img.delete();
+    medianBlur.delete();
   }
 
   saveImg() {
     this.payload.emit(this.form.value);
+    this.reset();
   }
 }

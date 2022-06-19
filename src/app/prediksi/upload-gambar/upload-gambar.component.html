@@ -1,4 +1,8 @@
-<div class="grid grid-nogutter" [formGroup]="form" *ngIf="editable; else noteditable">
+<div
+  class="grid grid-nogutter"
+  [formGroup]="form"
+  *ngIf="editable; else noteditable"
+>
   <div class="col-12">
     <div class="grid grid-nogutter">
       <div class="col-fixed pr-3">
@@ -44,11 +48,37 @@
           >
         </mat-form-field>
       </div>
+      <div class="col-fixed pr-3">
+        <mat-form-field>
+          <mat-label>Pilih jenis gambar</mat-label>
+          <mat-select formControlName="class">
+            <mat-option *ngFor="let item of classes" [value]="item">{{
+              item
+            }}</mat-option>
+          </mat-select>
+          <mat-error
+            *ngIf="
+              form.get('class').touched && form.get('class').invalid
+            "
+            >Kamu belum pilih jenis gambar!</mat-error
+          >
+        </mat-form-field>
+        <mat-icon [matTooltip]="tooltip" class="info">info</mat-icon>
+      </div>
       <div class="col">
-        <button mat-flat-button color="primary" (click)="processImg()">Proses</button>
+        <button mat-flat-button color="primary" (click)="processImg()">
+          Proses
+        </button>
       </div>
       <div class="col-fixed">
-        <button mat-flat-button color="primary" [disabled]="!isSubmit" (click)="saveImg()">Simpan</button>
+        <button
+          mat-flat-button
+          color="primary"
+          [disabled]="!isSubmit"
+          (click)="saveImg()"
+        >
+          Simpan
+        </button>
       </div>
     </div>
   </div>
