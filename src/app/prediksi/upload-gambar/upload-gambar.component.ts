@@ -44,7 +44,7 @@ export class UploadGambarComponent implements OnInit {
     this.form = this.fb.group({
       file_name: ['', Validators.required],
       file_src: ['', Validators.required],
-      class: ['', Validators.required],
+      // class: ['', Validators.required],
     });
   }
 
@@ -82,7 +82,6 @@ export class UploadGambarComponent implements OnInit {
   reset() {
     this.form.get('file_name').setValue('');
     this.form.get('file_src').setValue('');
-    this.form.get('class').setValue('');
     this.fileUpload.nativeElement.value = null;
     this.isSubmit = false;
   }

@@ -1,4 +1,4 @@
-import { AfterContentInit, AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterContentInit, AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import * as tf from '@tensorflow/tfjs';
@@ -23,19 +23,48 @@ export class PredictionComponent implements OnInit, OnDestroy, AfterViewInit {
     return this._imageList;
   }
 
+  _hasilForm: any;
+  @Input ('hasil')
+  set hasilForm(value) {
+    this._hasilForm = value;
+  }
+  get hasilForm() {
+    return this._hasilForm;
+  }
+
+  @Output('save') simpan: EventEmitter<any> = new EventEmitter();
+
   @ViewChild(MatPaginator) paginator: MatPaginator;
   loading: boolean = false;
   loadingModel: boolean = true;
   model: tf.LayersModel;
   className = ['Benign', 'Malignant', 'Normal'];
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
-  displayedColumns: string[] = ['id', 'name', 'class', 'benign', 'malignant', 'normal'];
+  displayedColumns: string[] = ['id', 'name', 'benign', 'malignant', 'normal'];
   private subs = new SubSink();
   page: number = 0;
+  isDonePredict = false;
+
   constructor() {}
 
   ngOnInit(): void {
     console.log('step 3');
+    this.setCurrentHasil();
+  }
+
+  setCurrentHasil() {
+    if (this.hasilForm.is_saved === 'true') {
+      this.dataSource.data = this.hasilForm.result;
+      if (this.dataSource.paginator) {
+        this.paginator.firstPage();
+      } else {
+        this.dataSource.paginator = this.paginator;
+      }
+      this.isDonePredict = true;
+    } else {
+      console.log('no data');
+      return;
+    }
   }
 
   ngAfterViewInit(): void {
@@ -73,6 +102,7 @@ export class PredictionComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.dataSource.paginator) {
       this.paginator.firstPage();
     }
+    this.isDonePredict = true;
   }
 
   async tensorFactory(input): Promise<any> {
@@ -99,9 +129,9 @@ export class PredictionComponent implements OnInit, OnDestroy, AfterViewInit {
 
     const payload = this.createPayload(_.cloneDeep(input), prediction, classes);
 
-    console.log('name: ', input.file_name);
-    console.log('prediction', prediction);
-    console.log('payload', payload);
+    // console.log('name: ', input.file_name);
+    // console.log('prediction', prediction);
+    // console.log('payload', payload);
 
     result.dispose();
     return payload;
@@ -130,6 +160,10 @@ export class PredictionComponent implements OnInit, OnDestroy, AfterViewInit {
         reject(error);
       };
     });
+  }
+
+  saveResult() {
+    this.simpan.emit(this.dataSource.data);
   }
 
   ngOnDestroy(): void {

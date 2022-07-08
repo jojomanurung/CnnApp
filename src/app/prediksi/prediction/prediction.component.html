@@ -8,6 +8,11 @@
       Mulai Prediksi
     </button>
   </div>
+  <div class="col-2">
+    <button *ngIf="isDonePredict" mat-raised-button color="primary" (click)="saveResult()">
+      Simpan Prediksi
+    </button>
+  </div>
 </div>
 
 <div class="grid grid-nogutter mt-2 flex-column mat-elevation-z2">
@@ -26,10 +31,10 @@
     </ng-container>
 
     <!-- Class Column -->
-    <ng-container matColumnDef="class">
+    <!-- <ng-container matColumnDef="class">
       <th mat-header-cell *matHeaderCellDef>Jenis</th>
       <td mat-cell *matCellDef="let row">{{ row.class }}</td>
-    </ng-container>
+    </ng-container> -->
 
     <!-- Benign Column -->
     <ng-container matColumnDef="benign">

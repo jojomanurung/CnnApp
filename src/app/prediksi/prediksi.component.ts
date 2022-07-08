@@ -1,6 +1,6 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatHorizontalStepper } from '@angular/material/stepper';
 
@@ -15,6 +15,7 @@ export class PrediksiComponent implements OnInit {
   firstForm: FormGroup;
   secondForm: FormGroup;
   thirdForm: FormGroup;
+  fourthForm: FormGroup;
   isEditable: boolean = true;
   imageDataList: any[] = [];
 
@@ -34,10 +35,29 @@ export class PrediksiComponent implements OnInit {
     });
 
     this.thirdForm = this.fb.group({
-      result: ['', Validators.required],
+      result: this.fb.array([]),
       is_saved: [false],
       convusion_matrix: [null],
     });
+
+    this.fourthForm = this.fb.group({
+      done: ['', Validators.required],
+    })
+  }
+
+  initResultForm() {
+    return this.fb.group({
+      file_src: [''],
+      file_name: [''],
+      prediction: [''],
+      benign: [''],
+      malignant: [''],
+      normal: [''],
+    })
+  }
+
+  getResultArray() {
+    return this.thirdForm.get('result') as FormArray;
   }
 
   selectionChange(event: StepperSelectionEvent): void {
@@ -67,5 +87,20 @@ export class PrediksiComponent implements OnInit {
     this.secondForm.get('done').patchValue('true');
     this.isEditable = false;
     this.stepper.next();
+  }
+
+  predictionResult(data) {
+    console.log('hasil', data);
+    if (data && data.length) {
+      data.forEach((element) => {
+        if (this.getResultArray().controls.length < data.length) {
+          this.getResultArray().push(this.initResultForm());
+        }
+      });
+
+      this.getResultArray().patchValue(data);
+      this.thirdForm.controls['is_saved'].patchValue('true');
+      console.log('result array', this.thirdForm.value);
+    }
   }
 }
