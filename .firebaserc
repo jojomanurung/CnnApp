@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "dila-hepitia": {
+      "hosting": {
+        "CnnApp": [
+          "dila-hepitia"
+        ]
+      }
+    }
+  }
+}
