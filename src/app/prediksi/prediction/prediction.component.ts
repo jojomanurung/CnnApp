@@ -48,7 +48,7 @@ export class PredictionComponent implements OnInit, OnDestroy, AfterViewInit {
   async loadModel() {
     this.loadingModel = true;
     const baseUrl = location.origin;
-    const modelUrl = baseUrl + '/assets/models/test/model.json';
+    const modelUrl = baseUrl + '/assets/models/8_juli/model.json';
     console.log(modelUrl);
     this.model = await tf.loadLayersModel(modelUrl);
     // Warm up the model
@@ -82,7 +82,7 @@ export class PredictionComponent implements OnInit, OnDestroy, AfterViewInit {
       let img = doc;
       img = tf.browser
         .fromPixels(img)
-        .resizeBilinear([224, 224])
+        .resizeNearestNeighbor([224, 224])
         .toFloat()
         .expandDims(0);
       return img as tf.Tensor;
