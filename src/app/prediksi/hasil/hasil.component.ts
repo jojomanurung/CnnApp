@@ -11,6 +11,7 @@ import { MatrixElement, MatrixController } from 'chartjs-chart-matrix';
 import * as tf from '@tensorflow/tfjs';
 import * as tfvis from '@tensorflow/tfjs-vis';
 import * as _ from 'lodash';
+import { MatTableDataSource } from '@angular/material/table';
 
 interface matrix {
   x: string;
@@ -36,6 +37,31 @@ export class HasilComponent implements OnInit, AfterViewInit {
   tensorPred: tf.Tensor1D;
   numClasses: number;
   confusionMatrix: number[][];
+
+  dataSource: MatTableDataSource<any> = new MatTableDataSource();
+  displayedColumns: string[] = [
+    'tp',
+    'fn',
+    'fp',
+    'tn',
+    'precision',
+    'recall',
+    'specificity',
+    'f1',
+    'accuracy',
+  ];
+  displayedColumnsMultiClass: string[] = [
+    'class',
+    'tp',
+    'fn',
+    'fp',
+    'tn',
+    'precision',
+    'recall',
+    'specificity',
+    'f1',
+    'accuracy',
+  ];
 
   constructor() {}
 
@@ -229,45 +255,157 @@ export class HasilComponent implements OnInit, AfterViewInit {
       let fp = this.confusionMatrix[1][0];
       let tn = this.confusionMatrix[1][1];
 
-      const precision = tp/(tp+fp);
-      const recall = tp/(tp+fn);
-      const specificity = tn/(tn+fp);
-      const f1 = 2*tp/(2*tp+fp+fn);
-      const accuracy = await tfvis.metrics.accuracy(this.tensorLabel, this.tensorPred);
+      let precision = tp / (tp + fp);
+      let recall = tp / (tp + fn);
+      let specificity = tn / (tn + fp);
+      let f1 = (2 * tp) / (2 * tp + fp + fn);
+      let accuracy = await tfvis.metrics.accuracy(
+        this.tensorLabel,
+        this.tensorPred
+      );
+      precision = Math.floor(precision*100)/100;
+      recall = Math.floor(recall*100)/100;
+      specificity = Math.floor(specificity*100)/100;
+      f1 = Math.floor(f1*100)/100;
+      accuracy = Math.floor(accuracy*100)/100;
       console.log('precision', precision);
       console.log('recall', recall);
       console.log('specificity', specificity);
       console.log('f1', f1);
       console.log('accuracy', accuracy);
-
+      const data = [];
+      data.push({
+        tp: tp,
+        fn: fn,
+        fp: fp,
+        tn: tn,
+        precision: precision,
+        recall: recall,
+        specificity: specificity,
+        f1: f1,
+        accuracy: accuracy,
+      });
+      this.dataSource.data = data;
     } else if (this.numClasses === 3) {
-      const result = [
+      const resp = [
         {
           class: 'Benign',
           tp: this.confusionMatrix[0][0],
           fn: this.confusionMatrix[0][1] + this.confusionMatrix[0][2],
           fp: this.confusionMatrix[1][0] + this.confusionMatrix[2][0],
-          tn: this.confusionMatrix[1][1] + this.confusionMatrix[1][2] + this.confusionMatrix[2][1] + this.confusionMatrix[2][2],
+          tn:
+            this.confusionMatrix[1][1] +
+            this.confusionMatrix[1][2] +
+            this.confusionMatrix[2][1] +
+            this.confusionMatrix[2][2],
         },
         {
           class: 'Malignant',
           tp: this.confusionMatrix[1][1],
           fn: this.confusionMatrix[1][0] + this.confusionMatrix[1][2],
           fp: this.confusionMatrix[0][1] + this.confusionMatrix[2][1],
-          tn: this.confusionMatrix[0][0] + this.confusionMatrix[0][2] + this.confusionMatrix[2][0] + this.confusionMatrix[2][2],
+          tn:
+            this.confusionMatrix[0][0] +
+            this.confusionMatrix[0][2] +
+            this.confusionMatrix[2][0] +
+            this.confusionMatrix[2][2],
         },
         {
           class: 'Normal',
           tp: this.confusionMatrix[2][2],
           fn: this.confusionMatrix[2][0] + this.confusionMatrix[2][1],
           fp: this.confusionMatrix[0][2] + this.confusionMatrix[1][2],
-          tn: this.confusionMatrix[0][0] + this.confusionMatrix[0][1] + this.confusionMatrix[1][0] + this.confusionMatrix[1][2],
-        }
-      ]
+          tn:
+            this.confusionMatrix[0][0] +
+            this.confusionMatrix[0][1] +
+            this.confusionMatrix[1][0] +
+            this.confusionMatrix[1][2],
+        },
+      ];
 
-      const accuracy = await tfvis.metrics.accuracy(this.tensorLabel, this.tensorPred);
+      let microAvg;
+      let macroAvg;
+      let totalTP = 0;
+      let totalFP = 0;
+      let totalFN = 0;
+      let totalTN = 0;
+      const calc = resp.map((val) => {
+        const dataCalc = {
+          class: val.class,
+          tp: val.tp,
+          fp: val.fp,
+          fn: val.fn,
+          tn: val.tn,
+          precision: Math.floor((val.tp / (val.tp + val.fp)) * 100)/100,
+          recall: Math.floor((val.tp / (val.tp + val.fn)) * 100)/100,
+          specificity: Math.floor((val.tn / (val.tn + val.fp)) * 100)/100,
+          f1: Math.floor(((2 * val.tp) / (2 * val.tp + val.fp + val.fn)) * 100)/100,
+          accuracy: Math.floor((
+            (val.tp + val.tn) / (val.tp + val.tn + val.fp + val.fn)) * 100
+          )/100,
+        };
+        totalTP += val.tp;
+        totalFP += val.fp;
+        totalFN += val.fn;
+        totalTN += val.tn;
+        return dataCalc;
+      });
+
+      microAvg = {
+        class: 'Micro Avg',
+        tp: null,
+        fp: null,
+        fn: null,
+        tn: null,
+        precision: Math.floor((totalTP / (totalTP + totalFP)) * 100)/100,
+        recall: Math.floor((totalTP / (totalTP + totalFN))*100)/100,
+        specificity: Math.floor((totalTN / (totalTN + totalFP))*100)/100,
+        f1: Math.floor(((2 * totalTP) / (2 * totalTP + totalFP + totalFN))*100)/100,
+        accuracy: null,
+      };
+      macroAvg = {
+        class: 'Macro Avg',
+        tp: null,
+        fp: null,
+        fn: null,
+        tn: null,
+        precision: Math.floor(
+          ((calc[0].precision + calc[1].precision + calc[2].precision) / 3)*100
+        )/100,
+        recall: Math.floor(
+          ((calc[0].recall + calc[1].recall + calc[2].recall) / 3)*100
+        )/100,
+        specificity: Math.floor(
+          ((calc[0].specificity + calc[1].specificity + calc[2].specificity) / 3)*100
+        )/100,
+        f1: Math.floor(((calc[0].f1 + calc[1].f1 + calc[2].f1) / 3)*100)/100,
+        accuracy: null,
+      };
+
+      const accuracy = await tfvis.metrics.accuracy(
+        this.tensorLabel,
+        this.tensorPred
+      );
+      calc.push(microAvg);
+      calc.push(macroAvg);
+      calc.push({
+        class: 'Total',
+        tp: null,
+        fp: null,
+        fn: null,
+        tn: null,
+        precision: null,
+        recall: null,
+        specificity: null,
+        f1: null,
+        accuracy: Math.floor(accuracy*100)/100,
+      });
+
       console.log('accuracy 3 class', accuracy);
-      console.log('result', result);
+      console.log('resp', resp);
+      console.log('calc', calc);
+
+      this.dataSource.data = calc;
     }
   }
 }
