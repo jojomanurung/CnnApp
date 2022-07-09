@@ -20,9 +20,9 @@ export const Menus: MenuItems[] = [
     route: 'prediksi',
     icon: 'batch_prediction',
   },
-  {
-    title: 'History',
-    route: 'history',
-    icon: 'history',
-  },
+  // {
+  //   title: 'History',
+  //   route: 'history',
+  //   icon: 'history',
+  // },
 ];

@@ -112,12 +112,12 @@ export class UploadGambarComponent implements OnInit {
     await tf.browser.toPixels(image, this.canvas1.nativeElement);
 
     let img = cv.imread(this.canvas1.nativeElement);
-    let medianBlur = new cv.Mat();
-    cv.medianBlur(img, medianBlur, 5);
-    cv.imshow(this.canvas2.nativeElement, medianBlur);
+    // let medianBlur = new cv.Mat();
+    // cv.medianBlur(img, medianBlur, 5);
+    // cv.imshow(this.canvas2.nativeElement, medianBlur);
     await wait(10);
     img.delete();
-    medianBlur.delete();
+    // medianBlur.delete();
   }
 
   saveImg() {
