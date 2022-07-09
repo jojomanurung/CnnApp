@@ -319,7 +319,7 @@ export class HasilComponent implements OnInit, AfterViewInit {
             this.confusionMatrix[0][0] +
             this.confusionMatrix[0][1] +
             this.confusionMatrix[1][0] +
-            this.confusionMatrix[1][2],
+            this.confusionMatrix[1][1],
         },
       ];
 
