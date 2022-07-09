@@ -58,12 +58,7 @@
   </mat-step>
   <mat-step [stepControl]="fourthForm" label="Hasil">
     <ng-container *ngIf="selectedIndex === 3">
-      <app-hasil></app-hasil>
+      <app-hasil [hasil]="getResultArray().value"></app-hasil>
     </ng-container>
-    <p>You are now done.</p>
-    <div>
-      <button mat-button matStepperPrevious>Back</button>
-      <button mat-button (click)="stepper.reset()">Reset</button>
-    </div>
   </mat-step>
 </mat-horizontal-stepper>

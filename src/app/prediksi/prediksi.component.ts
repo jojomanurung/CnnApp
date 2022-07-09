@@ -36,7 +36,7 @@ export class PrediksiComponent implements OnInit {
 
     this.thirdForm = this.fb.group({
       result: this.fb.array([]),
-      is_saved: [false],
+      is_saved: ['', Validators.required],
       convusion_matrix: [null],
     });
 
