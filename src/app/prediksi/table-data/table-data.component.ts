@@ -34,7 +34,7 @@ export class TableDataComponent implements OnInit, AfterViewInit, OnDestroy {
   @Output('dataChange') action = new EventEmitter();
   @ViewChild(MatPaginator) paginator: MatPaginator;
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
-  displayedColumns: string[] = ['id', 'name', 'class', 'action'];
+  displayedColumns: string[] = ['id', 'name', 'action'];
   page: number = 0;
   private subs = new SubSink();
 

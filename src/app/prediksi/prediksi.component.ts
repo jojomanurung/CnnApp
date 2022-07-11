@@ -42,7 +42,7 @@ export class PrediksiComponent implements OnInit {
 
     this.fourthForm = this.fb.group({
       done: ['', Validators.required],
-    })
+    });
   }
 
   initResultForm() {
@@ -53,7 +53,7 @@ export class PrediksiComponent implements OnInit {
       benign: [''],
       malignant: [''],
       normal: [''],
-    })
+    });
   }
 
   getResultArray() {
@@ -74,7 +74,8 @@ export class PrediksiComponent implements OnInit {
   saveImage(event: any) {
     this.imageDataList.push(event);
     this.firstForm.get('done').patchValue('true');
-    const message = 'Sukses menambahkan ' + event.file_name + ' ke dalam list data';
+    const message =
+      'Sukses menambahkan ' + event.file_name + ' ke dalam list data';
     this._snackBar.open(message, null, {
       duration: 5000,
       horizontalPosition: 'end',
@@ -101,6 +102,18 @@ export class PrediksiComponent implements OnInit {
       this.getResultArray().patchValue(data);
       this.thirdForm.controls['is_saved'].patchValue('true');
       console.log('result array', this.thirdForm.value);
+    }
+  }
+
+  reset(event) {
+    if (event) {
+      this.isEditable = true;
+      this.imageDataList = [];
+      this.firstForm.reset();
+      this.secondForm.reset();
+      this.thirdForm.reset();
+      this.fourthForm.reset();
+      this.stepper.reset();
     }
   }
 }

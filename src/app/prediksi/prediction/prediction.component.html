@@ -9,7 +9,12 @@
     </button>
   </div>
   <div class="col-2">
-    <button *ngIf="isDonePredict" mat-raised-button color="primary" (click)="saveResult()">
+    <button
+      *ngIf="isDonePredict"
+      mat-raised-button
+      color="primary"
+      (click)="saveResult()"
+    >
       Simpan Prediksi
     </button>
   </div>
@@ -17,7 +22,6 @@
 
 <div class="grid grid-nogutter mt-2 flex-column mat-elevation-z2">
   <table mat-table [dataSource]="dataSource">
-
     <!-- ID Column -->
     <ng-container matColumnDef="id">
       <th mat-header-cell *matHeaderCellDef>No</th>

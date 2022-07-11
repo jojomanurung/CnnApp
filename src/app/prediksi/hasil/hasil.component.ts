@@ -2,8 +2,10 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
+  EventEmitter,
   Input,
   OnInit,
+  Output,
   ViewChild,
 } from '@angular/core';
 import { Chart, registerables } from 'chart.js';
@@ -27,6 +29,7 @@ interface matrix {
 export class HasilComponent implements OnInit, AfterViewInit {
   @Input('hasil') result: any[];
   @ViewChild('chart') ctx: ElementRef;
+  @Output('reset') reset: EventEmitter<any> = new EventEmitter();
 
   chart: any;
 
@@ -263,16 +266,13 @@ export class HasilComponent implements OnInit, AfterViewInit {
         this.tensorLabel,
         this.tensorPred
       );
-      precision = Math.floor(precision*100)/100;
-      recall = Math.floor(recall*100)/100;
-      specificity = Math.floor(specificity*100)/100;
-      f1 = Math.floor(f1*100)/100;
-      accuracy = Math.floor(accuracy*100)/100;
-      console.log('precision', precision);
-      console.log('recall', recall);
-      console.log('specificity', specificity);
-      console.log('f1', f1);
-      console.log('accuracy', accuracy);
+
+      precision = this.mathFloorHelper(precision);
+      recall = this.mathFloorHelper(recall);
+      specificity = this.mathFloorHelper(specificity);
+      f1 = this.mathFloorHelper(f1);
+      accuracy = this.mathFloorHelper(accuracy);
+
       const data = [];
       data.push({
         tp: tp,
@@ -330,20 +330,25 @@ export class HasilComponent implements OnInit, AfterViewInit {
       let totalFN = 0;
       let totalTN = 0;
       const calc = resp.map((val) => {
+        let precision = val.tp / (val.tp + val.fp);
+        let recall = val.tp / (val.tp + val.fn);
+        let specificity = val.tn / (val.tn + val.fp);
+        let f1 = (2 * val.tp) / (2 * val.tp + val.fp + val.fn);
+        let accuracy = (val.tp + val.tn) / (val.tp + val.tn + val.fp + val.fn);
+
         const dataCalc = {
           class: val.class,
           tp: val.tp,
           fp: val.fp,
           fn: val.fn,
           tn: val.tn,
-          precision: Math.floor((val.tp / (val.tp + val.fp)) * 100)/100,
-          recall: Math.floor((val.tp / (val.tp + val.fn)) * 100)/100,
-          specificity: Math.floor((val.tn / (val.tn + val.fp)) * 100)/100,
-          f1: Math.floor(((2 * val.tp) / (2 * val.tp + val.fp + val.fn)) * 100)/100,
-          accuracy: Math.floor((
-            (val.tp + val.tn) / (val.tp + val.tn + val.fp + val.fn)) * 100
-          )/100,
+          precision: this.mathFloorHelper(precision),
+          recall: this.mathFloorHelper(recall),
+          specificity: this.mathFloorHelper(specificity),
+          f1: this.mathFloorHelper(f1),
+          accuracy: this.mathFloorHelper(accuracy),
         };
+
         totalTP += val.tp;
         totalFP += val.fp;
         totalFN += val.fn;
@@ -357,10 +362,12 @@ export class HasilComponent implements OnInit, AfterViewInit {
         fp: null,
         fn: null,
         tn: null,
-        precision: Math.floor((totalTP / (totalTP + totalFP)) * 100)/100,
-        recall: Math.floor((totalTP / (totalTP + totalFN))*100)/100,
-        specificity: Math.floor((totalTN / (totalTN + totalFP))*100)/100,
-        f1: Math.floor(((2 * totalTP) / (2 * totalTP + totalFP + totalFN))*100)/100,
+        precision: this.mathFloorHelper(totalTP / (totalTP + totalFP)),
+        recall: this.mathFloorHelper(totalTP / (totalTP + totalFN)),
+        specificity: this.mathFloorHelper(totalTN / (totalTN + totalFP)),
+        f1: this.mathFloorHelper(
+          (2 * totalTP) / (2 * totalTP + totalFP + totalFN)
+        ),
         accuracy: null,
       };
       macroAvg = {
@@ -369,16 +376,16 @@ export class HasilComponent implements OnInit, AfterViewInit {
         fp: null,
         fn: null,
         tn: null,
-        precision: Math.floor(
-          ((calc[0].precision + calc[1].precision + calc[2].precision) / 3)*100
-        )/100,
-        recall: Math.floor(
-          ((calc[0].recall + calc[1].recall + calc[2].recall) / 3)*100
-        )/100,
-        specificity: Math.floor(
-          ((calc[0].specificity + calc[1].specificity + calc[2].specificity) / 3)*100
-        )/100,
-        f1: Math.floor(((calc[0].f1 + calc[1].f1 + calc[2].f1) / 3)*100)/100,
+        precision: this.mathFloorHelper(
+          (calc[0].precision + calc[1].precision + calc[2].precision) / 3
+        ),
+        recall: this.mathFloorHelper(
+          (calc[0].recall + calc[1].recall + calc[2].recall) / 3
+        ),
+        specificity: this.mathFloorHelper(
+          (calc[0].specificity + calc[1].specificity + calc[2].specificity) / 3
+        ),
+        f1: this.mathFloorHelper((calc[0].f1 + calc[1].f1 + calc[2].f1) / 3),
         accuracy: null,
       };
 
@@ -398,7 +405,7 @@ export class HasilComponent implements OnInit, AfterViewInit {
         recall: null,
         specificity: null,
         f1: null,
-        accuracy: Math.floor(accuracy*100)/100,
+        accuracy: this.mathFloorHelper(accuracy),
       });
 
       console.log('accuracy 3 class', accuracy);
@@ -407,5 +414,9 @@ export class HasilComponent implements OnInit, AfterViewInit {
 
       this.dataSource.data = calc;
     }
+  }
+
+  mathFloorHelper(val: number) {
+    return Math.floor(val * 100) / 100;
   }
 }

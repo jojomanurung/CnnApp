@@ -138,13 +138,21 @@
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumnsMultiClass"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumnsMultiClass"></tr>
+        <tr
+          mat-row
+          *matRowDef="let row; columns: displayedColumnsMultiClass"
+        ></tr>
 
         <!-- Row shown when there is no matching data. -->
         <tr class="mat-row" *matNoDataRow>
           <td class="mat-cell text-center" colspan="100%">No data</td>
         </tr>
       </table>
+      <div class="button-reset">
+        <button mat-raised-button color="primary" (click)="reset.emit(true)">
+          Mulai Ulang
+        </button>
+      </div>
     </div>
   </div>
 </div>

@@ -1,4 +1,13 @@
-import { AfterContentInit, AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import * as tf from '@tensorflow/tfjs';
@@ -24,7 +33,7 @@ export class PredictionComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   _hasilForm: any;
-  @Input ('hasil')
+  @Input('hasil')
   set hasilForm(value) {
     this._hasilForm = value;
   }
