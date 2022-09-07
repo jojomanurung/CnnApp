@@ -101,6 +101,7 @@ export class PrediksiComponent implements OnInit {
 
       this.getResultArray().patchValue(data);
       this.thirdForm.controls['is_saved'].patchValue('true');
+      this.stepper.next();
       console.log('result array', this.thirdForm.value);
     }
   }
